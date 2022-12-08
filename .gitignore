@@ -22,6 +22,12 @@
 # Visual Studio cache directory
 .vs/
 
+# Rider setting files
+.idea/
+
+# VScodeも除外
+.vscode/
+
 # Gradle cache directory
 .gradle/
 
@@ -58,3 +64,12 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
