@@ -1,11 +1,12 @@
 using System;
+using Fusion;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
 namespace UnityStandardAssets.Vehicles.Car
 {
     [RequireComponent(typeof (CarController))]
-    public class CarUserControl : MonoBehaviour
+    public class CarUserControl : NetworkBehaviour
     {
         private CarController m_Car; // the car controller we want to use
         float frontRight;
@@ -22,7 +23,8 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private void FixedUpdate()
         {
-            // pass the input to the car!
+            //TODO: この関数を、ネットワークのホストの場合、クライアント場合に分けてから
+            // UpdateObservableで毎フレーム購読させる
             backLeft = Input.GetKey(KeyCode.A) ? 1 : 0;
             frontLeft = Input.GetKey(KeyCode.W) ? 1 : 0;
             frontRight = Input.GetKey(KeyCode.E) ? 1 : 0;
