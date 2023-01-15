@@ -126,7 +126,7 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
 
-        public void Move(float steering, float accel, float footbrake, float handbrake)
+        public void Move(float frontLeft, float frontRight, float backLeft, float backRight, float footbrake, float handbrake)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -138,19 +138,18 @@ namespace UnityStandardAssets.Vehicles.Car
             }
 
             //clamp input values
-            steering = Mathf.Clamp(steering, -1, 1);
-            AccelInput = accel = Mathf.Clamp(accel, 0, 1);
+            // AccelInput = accel = Mathf.Clamp(accel, 0, 1);
             BrakeInput = footbrake = -1*Mathf.Clamp(footbrake, -1, 0);
             handbrake = Mathf.Clamp(handbrake, 0, 1);
 
             //Set the steer on the front wheels.
             //Assuming that wheels 0 and 1 are the front wheels.
-            m_SteerAngle = steering*m_MaximumSteerAngle;
-            m_WheelColliders[0].steerAngle = m_SteerAngle;
-            m_WheelColliders[1].steerAngle = m_SteerAngle;
+            // m_SteerAngle = steering*m_MaximumSteerAngle;
+            // m_WheelColliders[0].steerAngle = m_SteerAngle;
+            // m_WheelColliders[1].steerAngle = m_SteerAngle;
 
             SteerHelper();
-            ApplyDrive(accel, footbrake);
+            ApplyDrive(frontLeft, frontRight, backLeft, backRight, footbrake);
             CapSpeed();
 
             //Set the handbrake.
@@ -193,32 +192,20 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
 
-        private void ApplyDrive(float accel, float footbrake)
+        private void ApplyDrive(float frontLeft, float frontRight, float backLeft, float backRight, float footbrake)
         {
-
-            float thrustTorque;
-            switch (m_CarDriveType)
-            {
-                case CarDriveType.FourWheelDrive:
-                    thrustTorque = accel * (m_CurrentTorque / 4f);
-                    for (int i = 0; i < 4; i++)
-                    {
-                        m_WheelColliders[i].motorTorque = thrustTorque;
-                    }
-                    break;
-
-                case CarDriveType.FrontWheelDrive:
-                    thrustTorque = accel * (m_CurrentTorque / 2f);
-                    m_WheelColliders[0].motorTorque = m_WheelColliders[1].motorTorque = thrustTorque;
-                    break;
-
-                case CarDriveType.RearWheelDrive:
-                    thrustTorque = accel * (m_CurrentTorque / 2f);
-                    m_WheelColliders[2].motorTorque = m_WheelColliders[3].motorTorque = thrustTorque;
-                    break;
-
-            }
-
+            m_WheelColliders[0].motorTorque = frontLeft * (m_CurrentTorque / 4);
+            m_WheelColliders[0].brakeTorque = frontLeft == 0 ? m_ReverseTorque : 0;
+            
+            m_WheelColliders[1].motorTorque = frontRight * (m_CurrentTorque / 4);
+            m_WheelColliders[1].brakeTorque = frontRight == 0 ? m_ReverseTorque : 0;
+            
+            m_WheelColliders[2].motorTorque = backLeft * (m_CurrentTorque / 4);
+            m_WheelColliders[2].brakeTorque = backLeft == 0 ? m_ReverseTorque : 0;
+            
+            m_WheelColliders[3].motorTorque = backRight * (m_CurrentTorque / 4);
+            m_WheelColliders[3].brakeTorque = backRight == 0 ? m_ReverseTorque : 0;
+            /*
             for (int i = 0; i < 4; i++)
             {
                 if (CurrentSpeed > 5 && Vector3.Angle(transform.forward, m_Rigidbody.velocity) < 50f)
@@ -230,7 +217,7 @@ namespace UnityStandardAssets.Vehicles.Car
                     m_WheelColliders[i].brakeTorque = 0f;
                     m_WheelColliders[i].motorTorque = -m_ReverseTorque*footbrake;
                 }
-            }
+            }*/
         }
 
 
